@@ -21,22 +21,15 @@ fig = figure;
 fig.Position(1:2) = fig.Position(1:2) - 600;
 fig.Position(3:4) = fig.Position(3:4) * 2;
 
-%% Set up and writing the movie.
-writerObj = VideoWriter('LaserTargets.avi'); % movie name.
-writerObj.FrameRate = 10; % Frames per second. Larger number correlates to smaller movie time duration. 
-open(writerObj);
-
 %test for tilt angle calculation
 for i = distToWall:-10:0
     for j = distToWall / 2 : -10 : -distToWall / 2
         commandPosition = [j, i]; %set the command position
         [pan, D] = calcPan(B, distToWall, commandPosition); %find the pan angle and the distance of the base of the tilt platform to the wall
         tilt = calcTilt(A, C, D, commandPosition); %find tilt angle
-        plotLaser(tilt, pan, A, B, C, D, distToWall, fig, writerObj) %plot the laser postion of a grid
+        plotLaser(tilt, pan, A, B, C, D, distToWall, fig) %plot the laser postion of a grid
     end
 end
-hold off;
-close(writerObj);% Saves the movie.
 
 %% Rotation Matrices Definitions
 %rotate around x axis
@@ -80,7 +73,7 @@ function tilt = calcTilt(A, C, D, commandPosition)
 end
 
 %plot where the laser is pointing
-function plotLaser(tilt, pan, A, B, C, D, distToWall, fig, writerObj)
+function plotLaser(tilt, pan, A, B, C, D, distToWall, fig)
     panAngle = pan; %degrees
     tiltAngle = 180 - tilt; %degrees
     
@@ -127,10 +120,5 @@ function plotLaser(tilt, pan, A, B, C, D, distToWall, fig, writerObj)
     %plot the laser in red
     laserPlot = plot3([laser(1, 1), laser(1, 2)], [laser(2, 1), laser(2, 2)], [laser(3, 1), laser(3, 2)], 'r', 'LineWidth', 2);
     laserHit = plot3(laser(1, 2), laser(2, 2), laser(3, 2), 'ro', 'LineWidth', 2);
-    
-    frame = getframe(gcf); % 'gcf' can handle if you zoom in to take a movie.
-    writeVideo(writerObj, frame);
-    
-    delete(mountPlot);
-    delete(laserPlot);
+    hold off;
 end
