@@ -7,9 +7,9 @@ commandPosition = [0, 40];
 debug = false; %if debug is true, the laser will try to hit a grid of points.
 findAngles = true; %find and save all of the angles to hit a grid of points;
 if findAngles
-   gridXLength = 200;
-   gridZLength = 200;
-   resolution = 10;
+   gridXLength = 640; %mm
+   gridZLength = 160; %mm
+   resolution = gridXLength / (sqrt(4096 / (gridXLength / gridZLength)) * (gridXLength / gridZLength)); %mm
 end
 
 %reference values for the tower pro 9g micro servo
@@ -37,30 +37,27 @@ if debug
         end
     end
 elseif findAngles
-    gridTilt = NaN(round(gridZLength/resolution) + 1, round(gridXLength/resolution) + 1);
-    gridPan = NaN(round(gridZLength/resolution) + 1, round(gridXLength/resolution) + 1);
+    gridTilt = NaN(round(gridZLength/resolution), round(gridXLength/resolution));
+    gridPan = NaN(1, round(gridXLength/resolution));
     rowCount = 1;
     colCount = 1;
-    for i = gridZLength : -resolution : 0
-        for j = gridXLength / 2 : -resolution : -gridXLength / 2
+    for i = gridZLength-resolution : -resolution : 0
+        for j = (gridXLength-resolution) / 2 : -resolution : resolution-gridXLength / 2
             commandPosition = [j, i]; %set the command position
             [pan, D] = calcPan(B, distToWall, commandPosition); %find the pan angle and the distance of the base of the tilt platform to the wall
             tilt = calcTilt(A, C, D, commandPosition); %find tilt angle
             
             gridTilt(rowCount, colCount) = tilt;
-            gridPan(rowCount, colCount) = pan;
+            if rowCount == 1
+                gridPan(colCount) = pan;
+            end
             colCount = colCount + 1;
         end
         colCount = 1;
         rowCount = rowCount + 1;
     end
     
-    fig = figure;
-    for i = 1 : length(gridTilt)
-        for j = 1 : length(gridPan)
-            plotLaser(gridTilt(i, j), gridPan(j, j), A, B, C, D, distToWall, fig)
-        end
-    end
+    [CalculatedHitsX, CalculatedHitsZ] = testCalc(gridTilt, gridPan, A, B, C, distToWall);
 else
     fig = figure;
     [pan, D] = calcPan(B, distToWall, commandPosition); %find the pan angle and the distance of the base of the tilt platform to the wall
@@ -110,7 +107,7 @@ function tilt = calcTilt(A, C, D, commandPosition)
 end
 
 %plot where the laser is pointing
-function plotLaser(tilt, pan, A, B, C, D, distToWall, fig)
+function plotLaser(tilt, pan, A, B, C, distToWall, fig)
     panAngle = pan; %degrees
     tiltAngle = 180 - tilt; %degrees
     D = distToWall / cosd(pan) - B;%Distance of Base of Tilt Platform to Wall (mm)
@@ -142,17 +139,17 @@ function plotLaser(tilt, pan, A, B, C, D, distToWall, fig)
     
     mountPlot = plot3(mount(1,:), mount(2,:), mount(3,:), 'k', 'LineWidth', 3);%plot the laser mount in black
     hold on;
-    xlim([-distToWall / 2, distToWall / 2]);
+    xlim([-100, 100]);
     ylim([-(B + C), distToWall]);
-    zlim([0, distToWall]);
+    zlim([0, 200]);
 
     xlabel('X');
     ylabel('Y');
     zlabel('Z');
 
-    for i = 0 : 10 : distToWall
-      plot3([-distToWall / 2, distToWall / 2], [distToWall, distToWall], [i, i], 'b');
-      plot3([i - distToWall / 2, i - distToWall / 2], [distToWall, distToWall], [0, distToWall], 'b'); 
+    for i = 0 : 10 : 200
+      plot3([-100, 100], [distToWall, distToWall], [i, i], 'b');
+      plot3([i - 100, i - 100], [distToWall, distToWall], [0, 200], 'b'); 
     end
     
     %plot the laser in red
@@ -160,4 +157,41 @@ function plotLaser(tilt, pan, A, B, C, D, distToWall, fig)
     laserHit = plot3(laser(1, 2), laser(2, 2), laser(3, 2), 'ro', 'LineWidth', 2);
     drawnow;
     hold off;
+end
+
+function [laserX, laserZ] = testCalc(gridTilt, gridPan, A, B, C, distToWall)
+    laserX = NaN(size(gridTilt, 1), size(gridPan, 2));
+    laserZ = NaN(size(gridTilt, 1), size(gridPan, 2));
+    for i = 1 : size(gridTilt, 1)
+        for j = 1 : size(gridPan, 2)
+            tilt = gridTilt(i, j);
+            pan = gridPan(j);
+            panAngle = pan; %degrees
+            tiltAngle = 180 - tilt; %degrees
+            D = distToWall / cosd(pan) - B;%Distance of Base of Tilt Platform to Wall (mm)
+
+            %find the length of the laser to the wall
+            if tilt == 90
+                laserLength = D;
+            else
+                laserLength = ((D + C / cosd(tilt)) / sind(tilt) - C * tand(tilt));
+            end
+
+            RL = xRot(-90); %set the rotation of the laser relative to the tilt arm to be perpendicular
+            RT = xRot(tiltAngle); %find the local rotation of the tilt arm around the x axis
+            RB = xRot(-90); %set the angle of the base of the tilt arm to be perpendicular to the pan arm
+            RP = zRot(panAngle); %find the local (also global) rotation of the pan arm around the z axis
+
+            panPos = RP \ [0; 0; A;]; %find the new end point position of the pan arm
+            basePos = (RB * RP) \ [0; 0; B]; %find the new, untranslated position of the base of the tilt arm
+            basePos = basePos + panPos; %translate the base of the tilt arm to the correct location
+            tiltPos = (RT * RB * RP) \ [0; 0; C]; %find the new end point of the tilt arm before it is translated
+            tiltPos = tiltPos + basePos; %translate the tilt arm to the correct global location
+            laserPos = (RL * RT * RB * RP) \ [0; 0; laserLength]; %find the untranslated position of the laser
+            laserPos = laserPos + tiltPos; %translate the laser to the correct, global position
+            
+            laserX(i, j) = laserPos(1, 1); %keeps trace of where the laser is hitting the target
+            laserZ(i, j) = laserPos(3, 1); %keeps trace of where the laser is hitting the target
+        end
+    end
 end
