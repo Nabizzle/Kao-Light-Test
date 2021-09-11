@@ -14,15 +14,29 @@ servoWidth = 12.6; %mm
 A = servoHeight + servoWidth / 2; %Panning Arm Length (mm)
 B = 33; %Base of Tilt Platform Length (mm)
 C = 33; %Tilt Arm Length (mm)
-D = 200; %Distance of Base of Tilt Platform to Wall (mm)
+distToWall = 200; %Distance of Base of Tilt Platform to Wall (mm)
 
-figure;
+
+fig = figure;
+fig.Position(1:2) = fig.Position(1:2) - 600;
+fig.Position(3:4) = fig.Position(3:4) * 2;
+
+%% Set up and writing the movie.
+writerObj = VideoWriter('LaserTargets.avi'); % movie name.
+writerObj.FrameRate = 10; % Frames per second. Larger number correlates to smaller movie time duration. 
+open(writerObj);
+
 %test for tilt angle calculation
-for i = 0:10:130
-    tilt = calcTilt(A, B, C, D, [0, i]); %find tilt angle
-    plotLaser(tilt, 0, A, B, C, D) %plot the laser postion of a grid
-    pause(0.1);
+for i = distToWall:-10:0
+    for j = distToWall / 2 : -10 : -distToWall / 2
+        commandPosition = [j, i]; %set the command position
+        [pan, D] = calcPan(B, distToWall, commandPosition); %find the pan angle and the distance of the base of the tilt platform to the wall
+        tilt = calcTilt(A, C, D, commandPosition); %find tilt angle
+        plotLaser(tilt, pan, A, B, C, D, distToWall, fig, writerObj) %plot the laser postion of a grid
+    end
 end
+hold off;
+close(writerObj);% Saves the movie.
 
 %% Rotation Matrices Definitions
 %rotate around x axis
@@ -46,8 +60,15 @@ mat=[cosd(theta) sind(theta) 0
     0 0 1];
 end
 
+%% functions to find the correct angles for a desired laser hit location
+%calculate the pan angle
+function [pan, D] = calcPan(B, distToWall, commandPosition)
+    pan = atand(commandPosition(1,1) / distToWall);
+    D = distToWall / cosd(pan) - B;%Distance of Base of Tilt Platform to Wall (mm)
+end
+
 %calculate the tilt of the laser mount to hit a specific point
-function tilt = calcTilt(A, B, C, D, commandPosition)
+function tilt = calcTilt(A, C, D, commandPosition)
     E = commandPosition(1, 2) - A; %find the vertical distace (on y) for the laser to hit a grid relative to where the base of the tilt arm is
     if E == A + C %if the laser need to hit parallel to the x-y plane, set the tilt angle to 90 degrees
         tilt = 90; %degrees
@@ -59,7 +80,7 @@ function tilt = calcTilt(A, B, C, D, commandPosition)
 end
 
 %plot where the laser is pointing
-function plotLaser(tilt, pan, A, B, C, D)
+function plotLaser(tilt, pan, A, B, C, D, distToWall, fig, writerObj)
     panAngle = pan; %degrees
     tiltAngle = 180 - tilt; %degrees
     
@@ -85,23 +106,31 @@ function plotLaser(tilt, pan, A, B, C, D)
 
     mount = [[0; 0; 0], panPos, basePos, tiltPos]; %combine all of the points of the laser mount into a matrix
     laser = [tiltPos, laserPos]; %combine the start and end points of the laser
-
-    plot3(mount(1,:), mount(2,:), mount(3,:), 'k', 'LineWidth', 3);%plot the laser mount in black
+    
+    figure(fig);
+    
+    mountPlot = plot3(mount(1,:), mount(2,:), mount(3,:), 'k', 'LineWidth', 3);%plot the laser mount in black
     hold on;
-    xlim([-66, 66]);
-    ylim([-66, D + C]);
-    zlim([0, 66 * 2]);
+    xlim([-distToWall / 2, distToWall / 2]);
+    ylim([-(B + C), distToWall]);
+    zlim([0, distToWall]);
 
     xlabel('X');
     ylabel('Y');
     zlabel('Z');
 
-    for i = 0 : 10 : 140
-      plot3([-66, 66], [D + C, D + C], [i, i], 'b');
-      plot3([i - 70, i - 70], [D + C, D + C], [0, 132], 'b'); 
+    for i = 0 : 10 : distToWall
+      plot3([-distToWall / 2, distToWall / 2], [distToWall, distToWall], [i, i], 'b');
+      plot3([i - distToWall / 2, i - distToWall / 2], [distToWall, distToWall], [0, distToWall], 'b'); 
     end
     
     %plot the laser in red
-    plot3([laser(1, 1),laser(1, 2)], [laser(2, 1), laser(2, 2)], [laser(3, 1),laser(3, 2)], 'r', 'LineWidth', 2);
-    hold off;
+    laserPlot = plot3([laser(1, 1), laser(1, 2)], [laser(2, 1), laser(2, 2)], [laser(3, 1), laser(3, 2)], 'r', 'LineWidth', 2);
+    laserHit = plot3(laser(1, 2), laser(2, 2), laser(3, 2), 'ro', 'LineWidth', 2);
+    
+    frame = getframe(gcf); % 'gcf' can handle if you zoom in to take a movie.
+    writeVideo(writerObj, frame);
+    
+    delete(mountPlot);
+    delete(laserPlot);
 end
