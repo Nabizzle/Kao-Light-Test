@@ -41,7 +41,7 @@ switch mode
         rowCount = 1;
         colCount = 1;
         for i = gridZLength-resolution : -resolution : 0
-            for j = (gridXLength-resolution) / 2 : -resolution : -gridXLength / 2
+            for j = (gridXLength-resolution) / 2 : -resolution : -(gridXLength-resolution) / 2
                 commandPosition = [j, i]; %set the command position
                 [pan, D] = calcPan(B, distToWall, commandPosition); %find the pan angle and the distance of the base of the tilt platform to the wall
                 tilt = calcTilt(A, C, D, commandPosition); %find tilt angle
