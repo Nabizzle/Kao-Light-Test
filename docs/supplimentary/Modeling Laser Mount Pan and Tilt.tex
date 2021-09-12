@@ -18,7 +18,6 @@
 \author{Nabeel Chowdhury}
 \date{\today}
 
-\renewcommand{\thesubsection}{\thesection.\alph{subsection}}
 \newcommand{\incfig}[1]{%
     \def\svgwidth{\columnwidth}
     \import{../media/}{#1.pdf_tex}
@@ -135,4 +134,133 @@
 			\cos(\theta_1) &= \frac{G}{D + B} &\\
 			D &= \frac{G}{\cos(\theta_1)} - B &\\
 		\end{flalign*}
+		
+	\section{Creating a Model of the Laser Mount}
+		\subsection{Creating the Default Position}
+			In order to model how the tilt and pan angles will affect laser placement on the target and to debug issues while excluding hardware issues, I made a virtual model of the laser mount.
+			
+			Each segment of the model is oriented along the z axis first and then the pan and tilt local angles are applied. The angles between the base of the tilt arm and the pan arm and the laser with the tilt arm are set as $-90 \degree$.
+			
+			In this position, the pan angle turns the laser to the left and a positive tilt angle is subtracted from $180 \degree$. In the default position shown below, the tilt angle is $90 \degree$.
+			
+			\begin{figure}[ht]
+				\centering
+				\resizebox{0.9\textwidth}{!}{\includegraphics[scale=0.5]{defaultPosition}}
+				\caption{The default position of the laser mount.}
+			\end{figure}
+		
+		\subsection{Applying Local Rotations}
+			When applying the tilt and pan angles, they need to be applied as local rotations and converted to the global positioning of the points that define the laser mount.
+			\subsubsection{Rotation Matrices}
+				The rotation matrices are below:
+				
+				\textbf{Rotation About the X Axis}
+				\begin{equation*}
+				R_x = 
+					\begin{bmatrix}
+						&1 &0 &0 \\
+    					&0 &\cos(\theta) &\sin(\theta) \\
+    					&0 &-\sin(\theta) &\cos(\theta)
+					\end{bmatrix}
+				\end{equation*}
+				
+				\textbf{Rotation About the Y Axis}
+				\begin{equation*}
+				R_y = 
+					\begin{bmatrix}
+						&\cos(\theta) &0 &-\sin(\theta) \\
+    					&0 &1 &0 \\ 
+    					&\sin(\theta) &0 &\cos(\theta)
+					\end{bmatrix}
+				\end{equation*}
+				
+				\textbf{Rotation About the Z Axis}
+				\begin{equation*}
+				R_z = 
+					\begin{bmatrix}
+						&\cos(\theta) &\sin(\theta)&0 \\
+    					&\-sin(\theta) &\cos(\theta) &0 \\
+    					&0 &0 &1
+					\end{bmatrix}
+				\end{equation*}
+			
+			\subsubsection{Matrix Multiplication}
+				Matrix multiplication is done starting from the origin, which is the base of the panning arm, and then working out towards the each point of the mount to the end of the laser. Each new rotation is applied to the left of the previous rotations. The rotated location of each point is found by inverting the combined rotation matrices and multiplying it by the length of the segment. The new point then needs to be translated by the value of the previous point. 
+				
+				\textbf{Rotating the Panning Arm}
+				\begin{flalign*}
+					\begin{bmatrix}
+						&x_P \\
+						&y_P \\
+						&z_P
+					\end{bmatrix} &= R_z^{-1}(\theta_1)					
+					\begin{bmatrix}
+						&0 \\
+						&0 \\
+						&A
+					\end{bmatrix} &\\
+				\end{flalign*}
+				
+				\textit{Note that this rotation will always return the same position as the panning arm is align along the z axis at the origin.}
+				
+				\textbf{Rotating the Base of the Tilt Arm}
+				\begin{flalign*}
+					\begin{bmatrix}
+						&x_B \\
+						&y_B \\
+						&z_B
+					\end{bmatrix} &= (R_x(-90 \degree) R_z(\theta_1))^{-1}				
+					\begin{bmatrix}
+						&0 \\
+						&0 \\
+						&B
+					\end{bmatrix} + 
+					\begin{bmatrix}
+						&x_P \\
+						&y_P \\
+						&z_P
+					\end{bmatrix} &\\
+				\end{flalign*}		
+				
+				\textbf{Rotation of the Tilt Arm}
+				\begin{flalign*}
+					\begin{bmatrix}
+						&x_T \\
+						&y_T \\
+						&z_T
+					\end{bmatrix} &= (R_x(\theta_2)R_x(-90 \degree) R_z(\theta_1))^{-1}				
+					\begin{bmatrix}
+						&0 \\
+						&0 \\
+						&C
+					\end{bmatrix} +
+					\begin{bmatrix}
+						&x_B \\
+						&y_B \\
+						&z_B
+					\end{bmatrix} &\\
+				\end{flalign*}
+				
+				\textbf{Laser Hit Location}
+				\begin{flalign*}
+					\text{Laser Length} &= L = \frac{D + \frac{C}{\cos(\theta_2)}}{\sin(\theta_2) - C\tan(\theta_2)} &\\					
+					\text{if } \theta_2 &= 90 \degree \text{, }L=D &\\
+					\begin{bmatrix}
+						&x_L \\
+						&y_L \\
+						&z_L
+					\end{bmatrix} &= (R_x(-90 \degree)R_x(\theta_2)R_x(-90 \degree) R_z(\theta_1))^{-1}				
+					\begin{bmatrix}
+						&0 \\
+						&0 \\
+						&L
+					\end{bmatrix} +
+					\begin{bmatrix}
+						&x_T \\
+						&y_T \\
+						&z_T
+					\end{bmatrix} &\\
+				\end{flalign*}
+				
+				The length of the laser found about is the distance from the laser diode to the wall.
 \end{document}
