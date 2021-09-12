@@ -41,7 +41,7 @@ switch mode
         rowCount = 1;
         colCount = 1;
         for i = gridZLength-resolution : -resolution : 0
-            for j = (gridXLength-resolution) / 2 : -resolution : resolution-gridXLength / 2
+            for j = (gridXLength-resolution) / 2 : -resolution : -gridXLength / 2
                 commandPosition = [j, i]; %set the command position
                 [pan, D] = calcPan(B, distToWall, commandPosition); %find the pan angle and the distance of the base of the tilt platform to the wall
                 tilt = calcTilt(A, C, D, commandPosition); %find tilt angle
@@ -61,7 +61,7 @@ switch mode
         fig = figure;
         [pan, D] = calcPan(B, distToWall, commandPosition); %find the pan angle and the distance of the base of the tilt platform to the wall
         tilt = calcTilt(A, C, D, commandPosition); %find tilt angle
-        plotLaser(tilt, pan, A, B, C, D, distToWall, fig); %plot the laser postion of a grid
+        plotLaser(tilt, pan, A, B, C, distToWall, fig); %plot the laser postion of a grid
     otherwise
         error('Incorrect Mode Selected')
 end
@@ -109,7 +109,7 @@ end
 
 %plot where the laser is pointing
 function plotLaser(tilt, pan, A, B, C, distToWall, fig)
-    [mount, laser] = applyRotation(tilt, pan, A, B, C, distToWall)
+    [mount, laser] = applyRotation(tilt, pan, A, B, C, distToWall);
 
     figure(fig);
 
@@ -167,7 +167,7 @@ function [mount, laser] = applyRotation(tilt, pan, A, B, C, distToWall)
     RB = xRot(-90); %set the angle of the base of the tilt arm to be perpendicular to the pan arm
     RP = zRot(panAngle); %find the local (also global) rotation of the pan arm around the z axis
 
-    panPos = RP \ [0; 0; A;]; %find the new end point position of the pan arm
+    panPos = [0; 0; A;]; %find the new end point position of the pan arm
     basePos = (RB * RP) \ [0; 0; B]; %find the new, untranslated position of the base of the tilt arm
     basePos = basePos + panPos; %translate the base of the tilt arm to the correct location
     tiltPos = (RT * RB * RP) \ [0; 0; C]; %find the new end point of the tilt arm before it is translated
