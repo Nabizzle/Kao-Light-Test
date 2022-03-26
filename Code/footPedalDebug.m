@@ -34,6 +34,7 @@ start = xippmex('time'); %get the sample time before the loop
 tot_data = [];
 stamps = [];
 tic;
+
 while(toc < 10)
     pause(0.01)
     now = xippmex('time'); %get the current sample time
@@ -41,7 +42,10 @@ while(toc < 10)
     start = now; %move the start time to when the last recording window ended
     tot_data = [tot_data, data]; %add the recorded data to the end of the rest of the data
     stamps = [stamps, double(time_stamp) / 30 : (double(time_stamp) / 30 + length(data) - 1)]; %saves the times of the samples
-    plot(tot_data);
-    axis([0, 10000, 0, 35000]);
+    plot(tot_data / 10000);
+    axis([0, 10000, 0, 3.5]);
+    title('Foot Pedal Output');
+    xlabel('time (ms)');
+    ylabel('voltage (V)');   
 end
 disp('done')
