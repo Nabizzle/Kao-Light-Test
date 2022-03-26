@@ -9,7 +9,7 @@ mode = 2; %mode for the code. 1 = debug, 2 = find all angles in a defined grid, 
 %define a grid to be used if mode = 2;
 gridXLength = 640; %mm
 gridZLength = 160; %mm
-resolution = gridXLength / (sqrt(4096 / (gridXLength / gridZLength)) * (gridXLength / gridZLength)); %mm
+resolution = gridXLength / (sqrt(400 / (gridXLength / gridZLength)) * (gridXLength / gridZLength)); %mm
 
 %reference values for the tower pro 9g micro servo
 servoHeight = 26.7; %mm
