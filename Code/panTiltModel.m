@@ -7,8 +7,8 @@ commandPosition = [0, 40];
 mode = 2; %mode for the code. 1 = debug, 2 = find all angles in a defined grid, 3 = show one laser location.
 
 %define a grid to be used if mode = 2;
-gridXLength = 640; %mm
-gridZLength = 160; %mm
+gridXLength = 300; %mm
+gridZLength = 150; %mm
 resolution = gridXLength / (sqrt(400 / (gridXLength / gridZLength)) * (gridXLength / gridZLength)); %mm
 
 %reference values for the tower pro 9g micro servo
@@ -17,10 +17,10 @@ servoLength = 22.8; %mm
 servoWidth = 12.6; %mm
 
 %segment lengths for the laser mount
-A = servoHeight + servoWidth / 2; %Panning Arm Length (mm)
-B = 33; %Base of Tilt Platform Length (mm)
-C = 33; %Tilt Arm Length (mm)
-distToWall = 100; %Distance of Base of Tilt Platform to Wall (mm)
+A = 41.17; %Panning Arm Length (mm)
+B = 24.78; %Base of Tilt Platform Length (mm)
+C = 33.32; %Tilt Arm Length (mm)
+distToWall = 300; %Distance of Base of Tilt Platform to Wall (mm)
 
 switch mode
     case 1 %debug. test for ability of laser to hit a grid of points
