@@ -12,11 +12,13 @@ During the test, the experimentor can choose the tilt angle that allows the lase
   * [Grapevine Setup](#grapevine-setup)
 * [Author](#author)
 * [Description of Each Script](#description-of-each-script)
+  * [dataScrape.m](datascrapem)
   * [digitalOutputDebug.m](digitaloutputdebugm)
   * [footPedalDebug.m](footpedaldebugm)
   * [kaoLightTest.mlapp](kaolighttestmlapp)
-  * [laserDebug.ino](laserdebugino)
   * [Kao_Light_Test.ino](kao_light_testino)
+  * [laserDebug.ino](laserdebugino)
+  * [laserStateWaveScrape.m](laserstatewavescrapemm)
   * [panTiltModel.m](#pantiltmodelm)
   
   # Getting Started
@@ -65,6 +67,9 @@ During the test, the experimentor can choose the tilt angle that allows the lase
   
   # Description of Each Script
   
+  ## dataScrape.m
+  This is the main data analysis script. It takes in the laser state and servo angle indcices to find where the tests occured and then find the moment the foot pedal was first pressed to find a reaciton time. Then the code outputs a figure to show the reaction times from proximal to distal on the arm.
+  
   ## digitalOutputDebug.m
   This is a debug script for the laser state digital output. It starts recording for half a second, turns the digital output on for half a second, and turns it off for half a second. Then the script outputs the recording from the second analog SMA input connection for you to verify the laser state indicator was recorded.
   
@@ -81,11 +86,14 @@ During the test, the experimentor can choose the tilt angle that allows the lase
   
   In the third block, the app runs the main experiment as well as allows you to set the number of repeats and stop the test. The main test diplicates the angles along the arm and randomizes the whole test array. The servos will move before the test begins and then after a 1-4 second delay, the laser will turn on. The subject then presses the foot pedal to react to the laser. The voltage across the foot pedal and the laser state digital output are recorded simultaneously. At the end of the test, the recording of the foot pedal recording, the laser state recordings, and the order of the servo angles is output to time stamped log files.
   
+  ## Kao_Light_Test.ino
+  The calculated panning and tilting servo angles are stored on the arduino at the beginning. **Remember that the Arduino can only really store around 400 tiliting angles.** The 12 digital inputs are then converted to their base 10 equivalent and used as an index for the tilt array. The tilt array index is also converted to an index for the panning array by taking the mod of the index by the length of the panning array. Make sure that if the grid is ever changed to recopy the newly calculated servo angles to the Arduino Uno. In the future, the servo angle arrays should be loaded to the Arduino from the MatLab app instead of manually copying and pasting the arrays. Alternativly, the digital outputs from the Grapevine could send the angle values directly.
+  
   ## laserDebug.ino
   Takes in the 12 digital outputs from the Grapevine and converts it to a base 10 number output to the Serial Monitor. **Note that the digital input 0 is always high and input 1 is always low as they are used by the Serial Monitor.**
   
-  ## Kao_Light_Test.ino
-  The calculated panning and tilting servo angles are stored on the arduino at the beginning. **Remember that the Arduino can only really store around 400 tiliting angles.** The 12 digital inputs are then converted to their base 10 equivalent and used as an index for the tilt array. The tilt array index is also converted to an index for the panning array by taking the mod of the index by the length of the panning array. Make sure that if the grid is ever changed to recopy the newly calculated servo angles to the Arduino Uno. In the future, the servo angle arrays should be loaded to the Arduino from the MatLab app instead of manually copying and pasting the arrays. Alternativly, the digital outputs from the Grapevine could send the angle values directly.
+  ## laserStateWaveScrape.m
+  Takes in the laser state and targets arrays to find the times of the tests. Outputs a figure to show the found test timeings as well as an array of each test time with the servo array index.
   
   ## panTiltModel.m
   Creates a computational model of the laser mount with user definable dimensions. For more information on how the model is made, refer to [this](https://github.com/iSensTeam/Kao-Light-Test/blob/main/docs/supplimentary/Modeling%20Laser%20Mount%20Pan%20and%20Tilt.pdf) supplimentary document.
