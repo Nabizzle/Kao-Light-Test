@@ -5182,10 +5182,12 @@ D = Direct mounting &lt;p&gt;
 <label x="99.06" y="48.26" size="1.778" layer="95"/>
 <pinref part="U$1" gate="G$1" pin="GND1"/>
 <wire x1="101.6" y1="53.34" x2="101.6" y2="58.42" width="0.1524" layer="91"/>
-<wire x1="-12.7" y1="111.76" x2="-12.7" y2="68.58" width="0.1524" layer="91"/>
+<wire x1="-12.7" y1="111.76" x2="-12.7" y2="96.52" width="0.1524" layer="91"/>
+<wire x1="-12.7" y1="96.52" x2="-12.7" y2="68.58" width="0.1524" layer="91"/>
 <wire x1="-12.7" y1="68.58" x2="-12.7" y2="53.34" width="0.1524" layer="91"/>
-<wire x1="-12.7" y1="53.34" x2="101.6" y2="53.34" width="0.1524" layer="91"/>
+<wire x1="-12.7" y1="53.34" x2="27.94" y2="53.34" width="0.1524" layer="91"/>
 <pinref part="DIGITAL-OUT" gate="G$1" pin="13"/>
+<wire x1="27.94" y1="53.34" x2="101.6" y2="53.34" width="0.1524" layer="91"/>
 <wire x1="-5.08" y1="111.76" x2="-12.7" y2="111.76" width="0.1524" layer="91"/>
 <label x="-22.86" y="81.28" size="1.778" layer="95"/>
 <pinref part="U$1" gate="G$1" pin="GND"/>
@@ -5220,6 +5222,12 @@ D = Direct mounting &lt;p&gt;
 <wire x1="81.28" y1="142.24" x2="81.28" y2="154.94" width="0.1524" layer="91"/>
 <junction x="81.28" y="142.24"/>
 <junction x="81.28" y="154.94"/>
+<pinref part="DIGITAL-OUT" gate="G$1" pin="G2"/>
+<wire x1="-7.62" y1="96.52" x2="-12.7" y2="96.52" width="0.1524" layer="91"/>
+<junction x="-12.7" y="96.52"/>
+<pinref part="DIGITAL-OUT" gate="G$1" pin="G1"/>
+<wire x1="27.94" y1="96.52" x2="27.94" y2="53.34" width="0.1524" layer="91"/>
+<junction x="27.94" y="53.34"/>
 </segment>
 </net>
 <net name="D14" class="0">

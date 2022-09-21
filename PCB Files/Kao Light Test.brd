@@ -2003,6 +2003,8 @@ Note, that not all DRC settings must be set by the manufacturer. Several can be 
 <vertex x="-7.62" y="-5.08"/>
 <vertex x="-7.62" y="53.34"/>
 </polygon>
+<contactref element="DIGITAL-OUT" pad="G2"/>
+<contactref element="DIGITAL-OUT" pad="G1"/>
 </signal>
 <signal name="VIN">
 <contactref element="U$1" pad="VIN"/>
