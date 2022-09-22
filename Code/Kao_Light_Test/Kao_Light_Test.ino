@@ -54,8 +54,8 @@ void loop() {
   dig_13 = digitalRead(13);
 
   //convert the digital inputs to pan and tilt angles
-  pan_angle += dig_0 + dig_1 * 2 + dig_2 * 4 + dig_3 * 8 + dig_4 * 16 + dig_5 * 32 + dig_6 * 64;
-  tilt_angle += dig_7 + dig_8 * 2 + dig_9 * 4 + dig_12 * 8 + dig_13 * 16;
+  pan_angle = 27 + dig_0 + dig_1 * 2 + dig_2 * 4 + dig_3 * 8 + dig_4 * 16 + dig_5 * 32 + dig_6 * 64;
+  tilt_angle = 74 + dig_7 + dig_8 * 2 + dig_9 * 4 + dig_12 * 8 + dig_13 * 16;
 
   //command the servos to their approviate angles
   pan.write(pan_angle);
