@@ -34,9 +34,9 @@ start = xippmex('time'); %get the sample time before the loop
 
 %turn digital output 1 on and off
 pause(0.5);
-xippmex('digout', 1, 1);
+xippmex('digout', 5, 8192);
 pause(0.5);
-xippmex('digout', 1, 0);
+xippmex('digout', 5, 0);
 pause(0.5);
 
 now = xippmex('time'); %get the current sample time
