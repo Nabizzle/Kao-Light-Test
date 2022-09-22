@@ -4863,8 +4863,8 @@ D = Direct mounting &lt;p&gt;
 </modules>
 <parts>
 <part name="LASER" library="SparkFun-Connectors" library_urn="urn:adsk.eagle:library:513" deviceset="JST_2MM_MALE" device="" package3d_urn="urn:adsk.eagle:package:38042/1"/>
-<part name="SERVO2" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="PINHD-1X3" device="CB" package3d_urn="urn:adsk.eagle:package:6240706/1" override_package3d_urn="urn:adsk.eagle:package:30732786/2" override_package_urn="urn:adsk.eagle:footprint:6240060/1"/>
-<part name="SERVO1" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="PINHD-1X3" device="CB" package3d_urn="urn:adsk.eagle:package:6240706/1" override_package3d_urn="urn:adsk.eagle:package:30732786/2" override_package_urn="urn:adsk.eagle:footprint:6240060/1"/>
+<part name="TILT_SERVO" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="PINHD-1X3" device="CB" package3d_urn="urn:adsk.eagle:package:6240706/1" override_package3d_urn="urn:adsk.eagle:package:30732786/2" override_package_urn="urn:adsk.eagle:footprint:6240060/1"/>
+<part name="PAN_SERVO" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="PINHD-1X3" device="CB" package3d_urn="urn:adsk.eagle:package:6240706/1" override_package3d_urn="urn:adsk.eagle:package:30732786/2" override_package_urn="urn:adsk.eagle:footprint:6240060/1"/>
 <part name="U$1" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="ARDUINO" device="UNO" package3d_urn="urn:adsk.eagle:package:6240691/1"/>
 <part name="DIGITAL-OUT" library="con-subd" library_urn="urn:adsk.eagle:library:189" deviceset="F25VP" device="" package3d_urn="urn:adsk.eagle:package:10240/1" override_package3d_urn="urn:adsk.eagle:package:30733185/2" override_package_urn="urn:adsk.eagle:footprint:10111/1"/>
 <part name="5V_REG" library="UA78M05IKVURG3" deviceset="UA78M05IKVURG3" device="" override_package3d_urn="urn:adsk.eagle:package:30739558/2" override_package_urn="urn:adsk.eagle:footprint:30739559/1"/>
@@ -4873,7 +4873,7 @@ D = Direct mounting &lt;p&gt;
 <part name="T1" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="2N2222" device="" package3d_urn="urn:adsk.eagle:package:6240647/1"/>
 <part name="CN1" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="JST_2PIN" device="-THM" package3d_urn="urn:adsk.eagle:package:6240693/1"/>
 <part name="R13" library="SparkFun-Resistors" library_urn="urn:adsk.eagle:library:532" deviceset="10KOHM" device="-HORIZ-1/4W-1%" package3d_urn="urn:adsk.eagle:package:39658/1" value="10k"/>
-<part name="R14" library="SparkFun-Resistors" library_urn="urn:adsk.eagle:library:532" deviceset="330OHM" device="-HORIZ-1/10W-5%" package3d_urn="urn:adsk.eagle:package:39658/1" value="220"/>
+<part name="R14" library="SparkFun-Resistors" library_urn="urn:adsk.eagle:library:532" deviceset="330OHM" device="-HORIZ-1/10W-5%" package3d_urn="urn:adsk.eagle:package:39658/1" value="1k"/>
 </parts>
 <sheets>
 <sheet>
@@ -4888,12 +4888,12 @@ D = Direct mounting &lt;p&gt;
 <instance part="LASER" gate="G$1" x="55.88" y="185.42" smashed="yes">
 <attribute name="NAME" x="53.34" y="191.262" size="1.778" layer="95"/>
 </instance>
-<instance part="SERVO2" gate="A" x="68.58" y="157.48" smashed="yes" rot="R180">
+<instance part="TILT_SERVO" gate="A" x="68.58" y="157.48" smashed="yes" rot="R180">
 <attribute name="NAME" x="64.135" y="161.29" size="1.778" layer="95" rot="R270"/>
 <attribute name="VALUE" x="74.93" y="165.1" size="1.778" layer="96" rot="R180"/>
 </instance>
-<instance part="SERVO1" gate="A" x="68.58" y="172.72" smashed="yes" rot="R180">
-<attribute name="NAME" x="64.135" y="176.53" size="1.778" layer="95" rot="R270"/>
+<instance part="PAN_SERVO" gate="A" x="68.58" y="172.72" smashed="yes" rot="R180">
+<attribute name="NAME" x="60.833" y="176.022" size="1.778" layer="95" rot="R270"/>
 <attribute name="VALUE" x="74.93" y="180.34" size="1.778" layer="96" rot="R180"/>
 </instance>
 <instance part="U$1" gate="G$1" x="88.9" y="91.44" smashed="yes"/>
@@ -4959,7 +4959,7 @@ D = Direct mounting &lt;p&gt;
 </net>
 <net name="TILT" class="0">
 <segment>
-<pinref part="SERVO2" gate="A" pin="3"/>
+<pinref part="TILT_SERVO" gate="A" pin="3"/>
 <wire x1="71.12" y1="160.02" x2="88.9" y2="160.02" width="0.1524" layer="91"/>
 <pinref part="U$1" gate="G$1" pin="D11"/>
 <wire x1="88.9" y1="160.02" x2="88.9" y2="119.38" width="0.1524" layer="91"/>
@@ -4970,7 +4970,7 @@ D = Direct mounting &lt;p&gt;
 <segment>
 <pinref part="U$1" gate="G$1" pin="D10"/>
 <wire x1="91.44" y1="119.38" x2="91.44" y2="175.26" width="0.1524" layer="91"/>
-<pinref part="SERVO1" gate="A" pin="3"/>
+<pinref part="PAN_SERVO" gate="A" pin="3"/>
 <wire x1="91.44" y1="175.26" x2="71.12" y2="175.26" width="0.1524" layer="91"/>
 <label x="88.9" y="165.1" size="1.778" layer="95"/>
 </segment>
@@ -5183,7 +5183,9 @@ D = Direct mounting &lt;p&gt;
 <pinref part="U$1" gate="G$1" pin="GND1"/>
 <wire x1="101.6" y1="53.34" x2="101.6" y2="58.42" width="0.1524" layer="91"/>
 <wire x1="-12.7" y1="111.76" x2="-12.7" y2="96.52" width="0.1524" layer="91"/>
-<wire x1="-12.7" y1="96.52" x2="-12.7" y2="68.58" width="0.1524" layer="91"/>
+<wire x1="-12.7" y1="96.52" x2="-12.7" y2="88.9" width="0.1524" layer="91"/>
+<wire x1="-12.7" y1="88.9" x2="-12.7" y2="81.28" width="0.1524" layer="91"/>
+<wire x1="-12.7" y1="81.28" x2="-12.7" y2="68.58" width="0.1524" layer="91"/>
 <wire x1="-12.7" y1="68.58" x2="-12.7" y2="53.34" width="0.1524" layer="91"/>
 <wire x1="-12.7" y1="53.34" x2="27.94" y2="53.34" width="0.1524" layer="91"/>
 <pinref part="DIGITAL-OUT" gate="G$1" pin="13"/>
@@ -5194,7 +5196,8 @@ D = Direct mounting &lt;p&gt;
 <junction x="55.88" y="142.24"/>
 <wire x1="81.28" y1="142.24" x2="55.88" y2="142.24" width="0.1524" layer="91"/>
 <label x="73.152" y="141.478" size="1.778" layer="95"/>
-<wire x1="-12.7" y1="111.76" x2="-12.7" y2="142.24" width="0.1524" layer="91"/>
+<wire x1="-12.7" y1="111.76" x2="-12.7" y2="116.84" width="0.1524" layer="91"/>
+<wire x1="-12.7" y1="116.84" x2="-12.7" y2="142.24" width="0.1524" layer="91"/>
 <wire x1="-12.7" y1="142.24" x2="55.88" y2="142.24" width="0.1524" layer="91"/>
 <junction x="-12.7" y="111.76"/>
 <pinref part="ANALOG" gate="G$1" pin="-"/>
@@ -5212,9 +5215,9 @@ D = Direct mounting &lt;p&gt;
 <wire x1="81.28" y1="119.38" x2="81.28" y2="142.24" width="0.1524" layer="91"/>
 <pinref part="5V_REG" gate="A" pin="COMMON"/>
 <wire x1="96.52" y1="172.72" x2="81.28" y2="172.72" width="0.1524" layer="91"/>
-<pinref part="SERVO2" gate="A" pin="1"/>
+<pinref part="TILT_SERVO" gate="A" pin="1"/>
 <wire x1="71.12" y1="154.94" x2="81.28" y2="154.94" width="0.1524" layer="91"/>
-<pinref part="SERVO1" gate="A" pin="1"/>
+<pinref part="PAN_SERVO" gate="A" pin="1"/>
 <wire x1="81.28" y1="154.94" x2="81.28" y2="170.18" width="0.1524" layer="91"/>
 <wire x1="81.28" y1="170.18" x2="71.12" y2="170.18" width="0.1524" layer="91"/>
 <wire x1="81.28" y1="172.72" x2="81.28" y2="170.18" width="0.1524" layer="91"/>
@@ -5228,6 +5231,30 @@ D = Direct mounting &lt;p&gt;
 <pinref part="DIGITAL-OUT" gate="G$1" pin="G1"/>
 <wire x1="27.94" y1="96.52" x2="27.94" y2="53.34" width="0.1524" layer="91"/>
 <junction x="27.94" y="53.34"/>
+<pinref part="DIGITAL-OUT" gate="G$1" pin="23"/>
+<wire x1="2.54" y1="96.52" x2="2.54" y2="88.9" width="0.1524" layer="91"/>
+<wire x1="2.54" y1="88.9" x2="-12.7" y2="88.9" width="0.1524" layer="91"/>
+<junction x="-12.7" y="88.9"/>
+<pinref part="DIGITAL-OUT" gate="G$1" pin="8"/>
+<wire x1="7.62" y1="111.76" x2="7.62" y2="116.84" width="0.1524" layer="91"/>
+<wire x1="7.62" y1="116.84" x2="-12.7" y2="116.84" width="0.1524" layer="91"/>
+<junction x="-12.7" y="116.84"/>
+<pinref part="DIGITAL-OUT" gate="G$1" pin="18"/>
+<wire x1="15.24" y1="96.52" x2="15.24" y2="81.28" width="0.1524" layer="91"/>
+<wire x1="15.24" y1="81.28" x2="-12.7" y2="81.28" width="0.1524" layer="91"/>
+<junction x="-12.7" y="81.28"/>
+<pinref part="DIGITAL-OUT" gate="G$1" pin="3"/>
+<wire x1="20.32" y1="111.76" x2="20.32" y2="116.84" width="0.1524" layer="91"/>
+<wire x1="20.32" y1="116.84" x2="7.62" y2="116.84" width="0.1524" layer="91"/>
+<junction x="7.62" y="116.84"/>
+<pinref part="DIGITAL-OUT" gate="G$1" pin="2"/>
+<wire x1="22.86" y1="111.76" x2="22.86" y2="116.84" width="0.1524" layer="91"/>
+<wire x1="22.86" y1="116.84" x2="20.32" y2="116.84" width="0.1524" layer="91"/>
+<junction x="20.32" y="116.84"/>
+<pinref part="DIGITAL-OUT" gate="G$1" pin="1"/>
+<wire x1="25.4" y1="111.76" x2="25.4" y2="116.84" width="0.1524" layer="91"/>
+<wire x1="25.4" y1="116.84" x2="22.86" y2="116.84" width="0.1524" layer="91"/>
+<junction x="22.86" y="116.84"/>
 </segment>
 </net>
 <net name="D14" class="0">
@@ -5264,10 +5291,10 @@ D = Direct mounting &lt;p&gt;
 </net>
 <net name="5VOUT" class="0">
 <segment>
-<pinref part="SERVO2" gate="A" pin="2"/>
+<pinref part="TILT_SERVO" gate="A" pin="2"/>
 <wire x1="71.12" y1="157.48" x2="78.74" y2="157.48" width="0.1524" layer="91"/>
 <wire x1="78.74" y1="157.48" x2="78.74" y2="172.72" width="0.1524" layer="91"/>
-<pinref part="SERVO1" gate="A" pin="2"/>
+<pinref part="PAN_SERVO" gate="A" pin="2"/>
 <wire x1="78.74" y1="172.72" x2="71.12" y2="172.72" width="0.1524" layer="91"/>
 <pinref part="5V_REG" gate="A" pin="OUTPUT"/>
 <pinref part="LASER" gate="G$1" pin="+"/>
