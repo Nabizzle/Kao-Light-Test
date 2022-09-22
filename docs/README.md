@@ -55,6 +55,8 @@ The Kao Light Test repository involves a set of scripts and an app used to analy
   Plug in the panning servo to signal pin 10 (servo 1 on the shield) and the tilting servo to signal pin 11 (servo 2 on the shield). **Note on older PCB's that in the image of the PCB these are labelled correctly, but in the current PCB, these servos are switched. If the PCB is reprinted to correct this, then this note should be deleted.** Make sure that the 7.8 V LiPo battery is also plugged in and check that the laser is not on automatically. If it is, you may need to adjust the shield or check that the laser connector is not touching metal. Plug in the USB cable to the Arduino to power it.
   
   Make sure to plug in the digital output cable from the Grapevine to the shield. This cable sends out the 12 bit digital signal to control for the 4096 possible angle values (128 for panning and 32 for tilting), a 13th signal to turn the laser on or off, and a fourteenth for signalling to an analog input when the laser was turned on for matching to the foot pedal data.
+
+  **Note that when uploading or reuploading a script to the arduino, you must disconnect the shield. The pull-down resistors on digital inputs 0 and 1 prevent the upload process from occurring.**
   
   ## Grapevine Setup
   
